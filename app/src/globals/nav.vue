@@ -9,18 +9,15 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">Single Page Application</a>
+                <router-link class="navbar-brand" to="/">{{ site_name }}</router-link>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li><a href="#">Link</a></li>
-                    <li><a href="#">Link</a></li>
-                    <li><a href="#">Link</a></li>
-                    <li><a href="#">Link</a></li>
-                    <li><a href="#">Link</a></li>
-                    <li><a href="#">Link</a></li>
+                    <li v-for="item in menu_items">
+                        <router-link :to="remove_base(item.url)">{{ item.title }} </router-link>
+                    </li>
                 </ul>
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
@@ -29,7 +26,21 @@
 
 <script>
     export default {
-        
+        data: function(){
+            return {
+                menu_items: [],
+                site_name: wp_rest_api.site_name
+            }
+        },
+        mounted: function(){
+            jQuery.get( wp_rest_api.spa_url + 'menus/primary' ).always((response) => {
+                this.menu_items             =   response;
+            });
+        },
+        methods: {
+            remove_base: function(url){
+                return url.replace( "http://localhost/spa", "" );
+            }
+        }
     }
 </script>
-
